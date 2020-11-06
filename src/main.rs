@@ -1,3 +1,8 @@
+use std::{fs::File, io::Result};
+use std::io::prelude::*;
+use std::io::BufReader;
+use std::fmt::Display;
+/*
 #[derive(Debug, PartialEq)]
 struct Robot {
     id: i32,
@@ -17,8 +22,12 @@ enum Instructions {
     F, L, R,
 }
 
+*/
 
-impl Orientation {
+
+// FONCTION DEPLACEMENT
+
+/*impl Orientation {
     pub fn rotate_left(self) -> Orientation {
         match self {
             Orientation::East  => Orientation::North,
@@ -62,7 +71,7 @@ fn forward(bot : &Robot) {
     }
 }
 
-
+*/
 
 
 /*fn deplacement (mut bot: &Robot)  {
@@ -135,10 +144,26 @@ fn deplacement (mut bot: Robot)  {
 */
 
 
-fn main() {
+fn main() -> std::io::Result<()> {
+
+    // Lecture du file.txt DÉDICACE AU GROUPE DE CLAIRE ET THOMAS POUR NOUS AVOIR AIDER #Remix
+    let file = File::open("two_robots.txt")?;
+    let mut buf_reader = BufReader::new(file);
+    let mut contents = String::new();
+    buf_reader.read_to_string(&mut contents)?;
+
+    let mut iter = contents.split_whitespace().collect::<Vec<_>>();
+
+    let map_x = iter.remove(0);
+    let map_y = iter.remove(0);
+    
+    for i in iter {
+
+    }
 
 
-    let bot = Robot {
+    
+   /* let bot = Robot {
         id: 0,
         pos_x: 2,
         pos_y: 2,
@@ -146,6 +171,6 @@ fn main() {
         instructions: vec![Instructions::F,Instructions::L,Instructions::L],
     };
     indila(&bot);
-    println!("pos x et y {} {} et orientation {:?}", bot.pos_x, bot.pos_y, bot.orientation);
-
+    println!("pos x et y {} {} et orientation {:?}", bot.pos_x, bot.pos_y, bot.orientation);*/
+    Ok(())
 }
