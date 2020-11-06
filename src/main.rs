@@ -1,4 +1,4 @@
-
+#[derive(Debug, PartialEq)]
 struct Robot {
     id: i32,
     pos_x: i32,
@@ -7,22 +7,66 @@ struct Robot {
     instructions: Vec<Instructions>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 enum Orientation {
-    North,
-    East,
-    South,
-    West, 
-}
-#[derive(Debug)]
-enum Instructions {
-    F,
-    L,
-    R,
+    North, East, South, West, 
 }
 
-fn deplacement (mut bot: Robot)  {
-    let vec = bot.instructions;
+#[derive(Debug, PartialEq)]
+enum Instructions {
+    F, L, R,
+}
+
+
+impl Orientation {
+    pub fn rotate_left(self) -> Orientation {
+        match self {
+            Orientation::East  => Orientation::North,
+            Orientation::North => Orientation::West,
+            Orientation::South => Orientation::East,
+            Orientation::West  => Orientation::South,
+        }
+    }
+
+    fn rotate_right(self) -> Orientation {
+        match self {
+            Orientation::East  => Orientation::South,
+            Orientation::North => Orientation::East,
+            Orientation::South => Orientation::West,
+            Orientation::West  => Orientation::North,
+        }
+    }
+}
+
+fn indila(bot : &Robot) {
+    let vec = &bot.instructions;
+    for i in vec.into_iter(){
+        if i == &Instructions::L {
+            Orientation::rotate_left(bot.orientation);
+        } else if i == &Instructions::R {
+            Orientation::rotate_right(bot.orientation);
+        } else if i == &Instructions::F {
+            forward(bot)
+        }
+            
+        
+    }
+}
+
+fn forward(bot : &Robot) {
+    match bot.orientation {
+        Orientation::East  => bot.pos_x += 1,
+        Orientation::North => bot.pos_y += 1,
+        Orientation::South => bot.pos_y -= 1,
+        Orientation::West  => bot.pos_x -= 1,
+    }
+}
+
+
+
+
+/*fn deplacement (mut bot: &Robot)  {
+    let vec = &bot.instructions;
     for i in vec.into_iter() {
         match i {
             Instructions::F => match bot.orientation {
@@ -45,7 +89,7 @@ fn deplacement (mut bot: Robot)  {
             }
         } 
     }
-}  
+}  */
 
 
 
@@ -101,7 +145,7 @@ fn main() {
         orientation: Orientation::South,
         instructions: vec![Instructions::F,Instructions::L,Instructions::L],
     };
-    deplacement(&bot);
+    indila(&bot);
     println!("pos x et y {} {} et orientation {:?}", bot.pos_x, bot.pos_y, bot.orientation);
 
 }
