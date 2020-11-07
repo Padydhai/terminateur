@@ -1,14 +1,15 @@
-use std::{fs::File, io::Result};
+use std::fs::File;
 use std::io::prelude::*;
 use std::io::BufReader;
 use strum_macros::EnumString;
+use std::str::FromStr;
 
 #[derive(Debug, PartialEq)]
 struct Robot {
     pos_x: i32,
     pos_y: i32,
     orientation: Orientation,
-    instructions: Vec<Instructions>,
+    instructions: String,
 }
 
 #[derive(Debug, PartialEq, EnumString)]
@@ -23,7 +24,7 @@ enum Orientation {
     West, 
 }
 
-#[derive(Debug, PartialEq,EnumString)]
+#[derive(Debug, PartialEq, EnumString)]
 enum Instructions {
     #[strum(serialize = "F")]
     Forward, 
@@ -34,7 +35,7 @@ enum Instructions {
 }
 
 
-
+/*
 
 // FONCTION DEPLACEMENT
 
@@ -57,7 +58,7 @@ impl Orientation {
         }
     }
 
-}
+}*/
 
 /*
 fn indila(bot : &Robot) {
@@ -75,7 +76,7 @@ fn indila(bot : &Robot) {
     }
 }
 */
-fn forward(bot : &Robot) {
+/*fn forward(bot : &Robot) {
     match bot.orientation {
         Orientation::East  => bot.pos_x += 1,
         Orientation::North => bot.pos_y += 1,
@@ -83,7 +84,7 @@ fn forward(bot : &Robot) {
         Orientation::West  => bot.pos_x -= 1,
     }
     unimplemented!();
-}
+}*/
 
 
 
@@ -125,20 +126,20 @@ fn main() -> std::io::Result<()> {
     buf_reader.read_to_string(&mut contents)?;
     let mut iter: Vec<_> = contents.split_whitespace().collect::<Vec<_>>();
 
-    let map_x = iter.remove(0).parse::<i32>().unwrap();
-    let map_y = iter.remove(0).parse::<i32>().unwrap();
+   // let map_x = iter.remove(0).parse::<i32>().unwrap();
+   // let map_y = iter.remove(0).parse::<i32>().unwrap();
     
-    let lairobeau: Vec<Robot> = Vec::new();
-    loop {
+    let mut lairobeau: Vec<Robot> = Vec::new();
+    while iter.len() > 0 {
         let bot = Robot {
             pos_x: iter.remove(0).parse::<i32>().unwrap(),
             pos_y: iter.remove(0).parse::<i32>().unwrap(),
-            orientation: iter.remove(0).parse::<Orientation>().unwrap(),
-            instructions: 
+            orientation: iter.remove(0).Orientation::from_str("N"|"S"|"W"|"E").unwrap(),
+            instructions: iter.remove(0).to_string(),
         };
         lairobeau.push(bot);
     }
-
+    println!("{:?}", lairobeau);
 
 
     
