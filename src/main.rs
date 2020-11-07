@@ -1,33 +1,44 @@
 use std::{fs::File, io::Result};
 use std::io::prelude::*;
 use std::io::BufReader;
-use std::fmt::Display;
-/*
+use strum_macros::EnumString;
+
 #[derive(Debug, PartialEq)]
 struct Robot {
-    id: i32,
     pos_x: i32,
     pos_y: i32,
     orientation: Orientation,
     instructions: Vec<Instructions>,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, EnumString)]
 enum Orientation {
-    North, East, South, West, 
+    #[strum(serialize = "N")]
+    North, 
+    #[strum(serialize = "E")]
+    East, 
+    #[strum(serialize = "S")]
+    South, 
+    #[strum(serialize = "W")]
+    West, 
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq,EnumString)]
 enum Instructions {
-    F, L, R,
+    #[strum(serialize = "F")]
+    Forward, 
+    #[strum(serialize = "L")]
+    Left, 
+    #[strum(serialize = "R")]
+    Right,
 }
 
-*/
+
 
 
 // FONCTION DEPLACEMENT
 
-/*impl Orientation {
+impl Orientation {
     pub fn rotate_left(self) -> Orientation {
         match self {
             Orientation::East  => Orientation::North,
@@ -45,8 +56,10 @@ enum Instructions {
             Orientation::West  => Orientation::North,
         }
     }
+
 }
 
+/*
 fn indila(bot : &Robot) {
     let vec = &bot.instructions;
     for i in vec.into_iter(){
@@ -58,10 +71,10 @@ fn indila(bot : &Robot) {
             forward(bot)
         }
             
-        
+        unimplemented!();
     }
 }
-
+*/
 fn forward(bot : &Robot) {
     match bot.orientation {
         Orientation::East  => bot.pos_x += 1,
@@ -69,9 +82,10 @@ fn forward(bot : &Robot) {
         Orientation::South => bot.pos_y -= 1,
         Orientation::West  => bot.pos_x -= 1,
     }
+    unimplemented!();
 }
 
-*/
+
 
 
 /*fn deplacement (mut bot: &Robot)  {
@@ -101,70 +115,34 @@ fn forward(bot : &Robot) {
 }  */
 
 
-
-/*
-fn deplacement (mut bot: Robot)  {
-    let vec = bot.instructions;
-    for i in vec.into_iter() {
-        if i == Instructions::F {
-            if bot.orientation ==  {
-                bot.pos_y += 1
-            } else if bot.orientation == "East" {
-                bot.pos_x += 1
-            } else if bot.orientation == "South" {
-                bot.pos_y -= 1
-            } else if bot.orientation == "West" {
-                bot.pos_x -= 1
-            }
-        } else if i == 'L' {
-            if bot.orientation == "North" {
-                bot.orientation = String::from("West")
-            } else if bot.orientation == "East" {
-                bot.orientation = String::from("North")
-            } else if bot.orientation == "South" {
-                bot.orientation = String::from("East")
-            } else if bot.orientation == "West" {
-                bot.orientation = String::from("South")
-            }
-        } else if i == 'R' {
-            if bot.orientation == "North" {
-                bot.orientation = String::from("East")
-            } else if bot.orientation == "East" {
-                bot.orientation = String::from("South")
-            } else if bot.orientation == "South" {
-                bot.orientation = String::from("West")
-            } else if bot.orientation == "West" {
-                bot.orientation = String::from("North")
-            }
-        }
-        
-    }
-    
-}
-*/
-
-
 fn main() -> std::io::Result<()> {
-
-    // Lecture du file.txt DÉDICACE AU GROUPE DE CLAIRE ET THOMAS POUR NOUS AVOIR AIDER #Remix
+    
+    // Lecture du file.txt 
+    // DÉDICACE AU GROUPE DE CLAIRE ET THOMAS POUR NOUS AVOIR AIDER 
     let file = File::open("two_robots.txt")?;
     let mut buf_reader = BufReader::new(file);
     let mut contents = String::new();
     buf_reader.read_to_string(&mut contents)?;
+    let mut iter: Vec<_> = contents.split_whitespace().collect::<Vec<_>>();
 
-    let mut iter = contents.split_whitespace().collect::<Vec<_>>();
-
-    let map_x = iter.remove(0);
-    let map_y = iter.remove(0);
+    let map_x = iter.remove(0).parse::<i32>().unwrap();
+    let map_y = iter.remove(0).parse::<i32>().unwrap();
     
-    for i in iter {
-
+    let lairobeau: Vec<Robot> = Vec::new();
+    loop {
+        let bot = Robot {
+            pos_x: iter.remove(0).parse::<i32>().unwrap(),
+            pos_y: iter.remove(0).parse::<i32>().unwrap(),
+            orientation: iter.remove(0).parse::<Orientation>().unwrap(),
+            instructions: 
+        };
+        lairobeau.push(bot);
     }
+
 
 
     
    /* let bot = Robot {
-        id: 0,
         pos_x: 2,
         pos_y: 2,
         orientation: Orientation::South,
