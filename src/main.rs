@@ -1,7 +1,6 @@
 use std::fs::File;
 use std::io::prelude::*;
 use std::io::BufReader;
-use strum_macros::EnumString;
 use std::str::FromStr;
 
 #[derive(Debug, PartialEq)]
@@ -9,147 +8,112 @@ struct Robot {
     pos_x: i32,
     pos_y: i32,
     orientation: Orientation,
-    instructions: String,
+    instructions: Vec<Instructions>,
 }
 
-#[derive(Debug, PartialEq, EnumString)]
+#[derive(Debug, PartialEq)]
 enum Orientation {
-    #[strum(serialize = "N")]
-    North, 
-    #[strum(serialize = "E")]
-    East, 
-    #[strum(serialize = "S")]
-    South, 
-    #[strum(serialize = "W")]
-    West, 
+    North,
+    East,
+    South,
+    West,
 }
 
-#[derive(Debug, PartialEq, EnumString)]
+#[derive(Debug, PartialEq)]
 enum Instructions {
-    #[strum(serialize = "F")]
-    Forward, 
-    #[strum(serialize = "L")]
-    Left, 
-    #[strum(serialize = "R")]
-    Right,
+    F,
+    L,
+    R,
 }
 
+impl std::str::FromStr for Orientation {
+    type Err = String;
 
-/*
+    fn from_str(orien_str: &str) -> Result<Self, Self::Err> {
+        match orien_str {
+            "N" => Ok(Orientation::North),
+            "E" => Ok(Orientation::East),
+            "S" => Ok(Orientation::South),
+            "W" => Ok(Orientation::West),
+            _ => Err(format!("Tourner dans le vide vide")),
+        }
+    }
+}
 
-// FONCTION DEPLACEMENT
+fn from_char(instru_char: char) -> Result<Instructions, String> {
+    match instru_char {
+        'F' => Ok(Instructions::F),
+        'L' => Ok(Instructions::L),
+        'R' => Ok(Instructions::R),
+        _ => Err(format!("TAISEZ-VOUS VOus vous")),
+    }
+}
 
 impl Orientation {
-    pub fn rotate_left(self) -> Orientation {
+    fn rotate_left(self) -> Orientation {
         match self {
-            Orientation::East  => Orientation::North,
+            Orientation::East => Orientation::North,
             Orientation::North => Orientation::West,
             Orientation::South => Orientation::East,
-            Orientation::West  => Orientation::South,
+            Orientation::West => Orientation::South,
         }
     }
 
     fn rotate_right(self) -> Orientation {
         match self {
-            Orientation::East  => Orientation::South,
+            Orientation::East => Orientation::South,
             Orientation::North => Orientation::East,
             Orientation::South => Orientation::West,
-            Orientation::West  => Orientation::North,
+            Orientation::West => Orientation::North,
         }
-    }
-
-}*/
-
-/*
-fn indila(bot : &Robot) {
-    let vec = &bot.instructions;
-    for i in vec.into_iter(){
-        if i == &Instructions::L {
-            Orientation::rotate_left(bot.orientation);
-        } else if i == &Instructions::R {
-            Orientation::rotate_right(bot.orientation);
-        } else if i == &Instructions::F {
-            forward(bot)
-        }
-            
-        unimplemented!();
     }
 }
-*/
-/*fn forward(bot : &Robot) {
-    match bot.orientation {
-        Orientation::East  => bot.pos_x += 1,
-        Orientation::North => bot.pos_y += 1,
-        Orientation::South => bot.pos_y -= 1,
-        Orientation::West  => bot.pos_x -= 1,
+
+impl Robot {
+    fn forward(mut bot: Self) {
+        match bot.orientation {
+            Orientation::East => bot.pos_x += 1,
+            Orientation::North => bot.pos_y += 1,
+            Orientation::South => bot.pos_y -= 1,
+            Orientation::West => bot.pos_x -= 1,
+        }
     }
-    unimplemented!();
-}*/
+}
 
-
-
-
-/*fn deplacement (mut bot: &Robot)  {
-    let vec = &bot.instructions;
-    for i in vec.into_iter() {
-        match i {
-            Instructions::F => match bot.orientation {
-                Orientation::East  => bot.pos_x += 1,
-                Orientation::North => bot.pos_y += 1,
-                Orientation::South => bot.pos_y -= 1,
-                Orientation::West  => bot.pos_x -= 1,
-            }
-            Instructions::L => match bot.orientation { 
-                Orientation::East  => bot.orientation = Orientation::North,
-                Orientation::North => bot.orientation = Orientation::West,
-                Orientation::South => bot.orientation = Orientation::East,
-                Orientation::West  => bot.orientation = Orientation::South,
-            }
-            Instructions::R => match bot.orientation {
-                Orientation::East  => bot.orientation = Orientation::South,
-                Orientation::North => bot.orientation = Orientation::East,
-                Orientation::South => bot.orientation = Orientation::West,
-                Orientation::West  => bot.orientation = Orientation::North,
-            }
-        } 
-    }
-}  */
-
+fn za_warudo(x_max: i32, y_max: i32, terminateurs: Vec<Robot>) {
+    println!("Terrain [ x_max = {}; y_max = {} ]", x_max, y_max);
+}
 
 fn main() -> std::io::Result<()> {
-    
-    // Lecture du file.txt 
-    // DÉDICACE AU GROUPE DE CLAIRE ET THOMAS POUR NOUS AVOIR AIDER 
-    let file = File::open("two_robots.txt")?;
+    // Lecture du file.txt
+    // Dédicace au groupe de Claire et Thomas pou vous avoir aider (Clarification du comment du pourquoi)
+    let file = File::open("./two_robots.txt")?;
     let mut buf_reader = BufReader::new(file);
     let mut contents = String::new();
     buf_reader.read_to_string(&mut contents)?;
-    let mut iter: Vec<_> = contents.split_whitespace().collect::<Vec<_>>();
+    let mut infos = contents.split_whitespace();
 
-   // let map_x = iter.remove(0).parse::<i32>().unwrap();
-   // let map_y = iter.remove(0).parse::<i32>().unwrap();
-    
+    let map_x = infos.next().unwrap().parse::<i32>().unwrap();
+    let map_y = infos.next().unwrap().parse::<i32>().unwrap();
     let mut lairobeau: Vec<Robot> = Vec::new();
-    while iter.len() > 0 {
-        let bot = Robot {
-            pos_x: iter.remove(0).parse::<i32>().unwrap(),
-            pos_y: iter.remove(0).parse::<i32>().unwrap(),
-            orientation: iter.remove(0).Orientation::from_str("N"|"S"|"W"|"E").unwrap(),
-            instructions: iter.remove(0).to_string(),
+
+    loop {
+        let mut bot = Robot {
+            pos_x: infos.next().unwrap().parse::<i32>().unwrap(),
+            pos_y: infos.next().unwrap().parse::<i32>().unwrap(),
+            orientation: Orientation::from_str(infos.next().unwrap()).unwrap(),
+            instructions: Vec::new(),
         };
+
+        for instr in infos.next().unwrap().chars() {
+            bot.instructions.push(from_char(instr).unwrap());
+        }
         lairobeau.push(bot);
+        if infos.next() == None {
+            break;
+        }
     }
-    println!("{:?}", lairobeau);
-
-
-    
-   /* let bot = Robot {
-        pos_x: 2,
-        pos_y: 2,
-        orientation: Orientation::South,
-        instructions: vec![Instructions::F,Instructions::L,Instructions::L],
-    };
-    indila(&bot);
-    println!("pos x et y {} {} et orientation {:?}", bot.pos_x, bot.pos_y, bot.orientation);*/
+    za_warudo(map_x, map_y, lairobeau);
+    // println!("{:?}", lairobeau);
     Ok(())
 }
